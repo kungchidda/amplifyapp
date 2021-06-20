@@ -58,7 +58,7 @@ const convertUrlType = (param, type) => {
  * HTTP Get method for list objects *
  ********************************/
 
-app.get(path, function(req, res) {
+app.get(path + hashKeyPath, function(req, res) {
   var condition = {}
   condition[partitionKeyName] = {
     ComparisonOperator: 'EQ'
@@ -77,10 +77,11 @@ app.get(path, function(req, res) {
 
   let queryParams = {
     TableName: tableName,
-    KeyConditions: condition
+    //KeyConditions: condition
+    ProjectionExpression: 'id, title',
   }
 
-  dynamodb.query(queryParams, (err, data) => {
+  dynamodb.scan(queryParams, (err, data) => {
     if (err) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err});
