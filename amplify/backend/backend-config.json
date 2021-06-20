@@ -6,5 +6,48 @@
       "dependsOn": [],
       "customAuth": false
     }
+  },
+  "storage": {
+    "collectionTable": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation"
+    }
+  },
+  "function": {
+    "collectionLambda": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "storage",
+          "resourceName": "collectionTable",
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "attributeEnvMap": {
+            "Name": "TABLE_NAME",
+            "Arn": "TABLE_ARN"
+          }
+        }
+      ]
+    }
+  },
+  "api": {
+    "collectionAPI": {
+      "service": "API Gateway",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "collectionLambda",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        }
+      ]
+    }
   }
 }

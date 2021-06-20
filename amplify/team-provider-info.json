@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "amplifyapp0c43bdbc": {}
+      },
+      "function": {
+        "collectionLambda": {
+          "deploymentBucketName": "amplify-amplifyapp-dev-233248-deployment",
+          "s3Key": "amplify-builds/collectionLambda-305145594a5456435636-build.zip"
+        }
       }
     }
   }
