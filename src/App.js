@@ -17,6 +17,7 @@ class App extends Component {
     list: [],
     showDetail: false,
     selectedItem: {},
+    filter: [{ label: "" , value:""}]
   }
 
   handleChange = e => {
@@ -31,6 +32,7 @@ class App extends Component {
       id: Date.now().toString(),
       title: this.state.title,
       content: this.state.content,
+      filter: this.state.filter
     }
 
     try {
@@ -68,6 +70,40 @@ class App extends Component {
   handleBackList = () => {
     this.setState({ showDetail: false })
   }
+
+
+
+  handleFilterLabelChange = idx => e => {
+    const newFilter = this.state.filter.map((filter, sidx) => {
+      if (idx !== sidx) return filter;
+      return { ...filter, label: e.target.value };
+    });
+
+    this.setState({ filter: newFilter });
+  };
+
+  handleFilterValueChange = idx => e => {
+    const newFilter = this.state.filter.map((filter, sidx) => {
+      if (idx !== sidx) return filter;
+      return { ...filter, value: e.target.value };
+    });
+
+    this.setState({ filter: newFilter });
+  };
+
+  handleAddFilter = () => {
+    console.log("start handleAddFilter");
+    this.setState({
+      filter: this.state.filter.concat([{ name: "" }])
+    });
+    console.log("end handleAddFilter");
+  };
+
+  handleRemoveFilter = idx => () => {
+    this.setState({
+      filter: this.state.filter.filter((s, sidx) => idx !== sidx)
+    });
+  };
 
   async fetchList() {
     try {
@@ -118,6 +154,22 @@ class App extends Component {
           <button className="btn" type="submit">
             Submit
           </button>
+
+          {this.state.filter.map((filter, idx) => (
+            <div className="filter">
+              <input name={`filter[${idx}].label`} type="text" placeholder={`Filter #${idx + 1} label`} value={filter.label} onChange={this.handleFilterLabelChange(idx)} />
+              <input name={`filter[${idx}].value`} type="text" placeholder={`Filter #${idx + 1} value`} value={filter.value} onChange={this.handleFilterValueChange(idx)} />
+              <button type="button" onClick={this.handleRemoveFilter(idx)}>
+                Delete
+              </button>
+            </div>
+          ))}
+
+          <button type="button" onClick={this.handleAddFilter}>
+            Add Filter
+          </button>
+
+
         </form>
         <hr />
         <h3>List</h3>
