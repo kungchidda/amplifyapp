@@ -16,8 +16,6 @@ class main extends Component {
     title: '',
     content: '',
     list: [],
-    showDetail: false,
-    selectedItem: {},
     filter: [{ label: '', value: '' }]
   }
 
@@ -68,7 +66,9 @@ class main extends Component {
         <ul style={{ display: showDetail ? 'none' : 'block' }}>
           {list.map(item => (
             <li key={item.id}>
-              {item.title}<Link to={`/object/${item.id}`}>Edit</Link>
+              {item.title}
+              <button><Link to={`/addSub/${item.id}`}>Add</Link> </button>
+              <button><Link to={`/edit/${item.id}`}>Edit</Link></button>
               <button type="button" className="btn" onClick={() => handleDelete(item.id)}>
                 Delete
               </button>

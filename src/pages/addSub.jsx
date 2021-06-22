@@ -11,11 +11,14 @@ Amplify.configure(awsConfig)
 let apiName = 'collectionAPI'
 let path = '/collection'
 
-class add extends Component {
+class addSub extends Component {
+
+
   state = {
     title: '',
     content: '',
-    filter: [{ label: '', value: '' }]
+    filter: [{ label: '', value: '' }],
+    upperId: ''
   }
 
   handleChange = e => {
@@ -24,17 +27,18 @@ class add extends Component {
   }
 
   handleSubmit = async e => {
+    console.log("this.state.title = ", this.state.title);
     e.preventDefault()
-
     const body = {
       id: Date.now().toString(),
       title: this.state.title,
       content: this.state.content,
-      filter: this.state.filter
+      filter: this.state.filter,
+      upperId: this.state.id
     }
 
     try {
-      const res = await API.post(apiName, path, { body })
+      const res = await API.put(apiName, path, { body })
       console.log(res)
     } catch (err) {
       console.log(err)
@@ -45,10 +49,15 @@ class add extends Component {
   }
 
   handleSelectItem = async id => {
-
+    
     try {
       const res = await API.get(apiName, `${path + '/object/' + id}`)
-      this.setState({ ...res })
+      // this.setState({ ...res } )
+      this.setState({
+        upperId: res.id
+      }
+      )
+      console.log("handleSelectItem success\n",res)
     } catch (err) {
       console.log(err)
     }
@@ -56,8 +65,8 @@ class add extends Component {
 
   handleDelete = async id => {
     try {
-      await API.del(apiName, `${path + '/object/' + id}`)
-      this.setState({ showDetail: false })
+      await API.del(apiName, `${path + '/object' + id}`)
+      this.setState({ showDetail: true })
       this.fetchList()
     } catch (err) {
       console.log(err)
@@ -89,11 +98,9 @@ class add extends Component {
   };
 
   handleAddFilter = () => {
-    console.log("start handleAddFilter");
     this.setState({
       filter: this.state.filter.concat([{ label: '', value: '' }])
     });
-    console.log("end handleAddFilter");
   };
 
   handleRemoveFilter = idx => () => {
@@ -103,6 +110,7 @@ class add extends Component {
   };
 
   async fetchList() {
+    console.log("start fetchList")
     try {
       const res = await API.get(apiName, path)
       this.setState({ list: [...res] })
@@ -112,7 +120,8 @@ class add extends Component {
   }
 
   componentDidMount() {
-    this.fetchList()
+    const { id } = this.props.match.params;
+    this.handleSelectItem(id)
   }
 
   render() {
@@ -131,6 +140,7 @@ class add extends Component {
       <div className="App">
 
 
+        <h2>Todo</h2>
         
         <form onSubmit={handleSubmit}>
           <div className="row">
@@ -156,7 +166,6 @@ class add extends Component {
             Submit
           </button>
           <button><Link to={'/main'}>Cancel</Link></button>
-
           {this.state.filter.map((filter, idx) => (
             <div className="filter">
               <input name={`filter[${idx}].label`} type="text" placeholder={`Filter #${idx + 1} label`} value={filter.label} onChange={this.handleFilterLabelChange(idx)} />
@@ -173,11 +182,10 @@ class add extends Component {
 
 
         </form>
-        <hr />
         
       </div>
     )
   }
 }
 
-export default withAuthenticator(add, true)
+export default withAuthenticator(addSub, true)

@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import main from './pages/main';
 import edit from './pages/edit';
 import add from './pages/add';
+import addSub from './pages/addSub';
 
 Amplify.configure(awsConfig)
 
@@ -140,8 +141,9 @@ class App extends Component {
       <div className="App">
         <Router>
           <Route exact path='/main' component={main} />
-          <Route exact path='/object/:id' component={edit} />
+          <Route exact path='/edit/:id' component={edit} />
           <Route exact path='/add' component={add} />
+          <Route exact path='/addSub/:id' component={addSub} />
         </Router>
 
         {/* <h2>Todo</h2>

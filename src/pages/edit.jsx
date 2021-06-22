@@ -17,9 +17,6 @@ class edit extends Component {
   state = {
     title: '',
     content: '',
-    list: [],
-    showDetail: false,
-    selectedItem: {},
     filter: [{ label: '', value: '' }]
   }
 
@@ -50,8 +47,7 @@ class edit extends Component {
   }
 
   handleSelectItem = async id => {
-    this.setState({ showDetail: true, selectedItem: {} })
-
+    
     try {
       const res = await API.get(apiName, `${path + '/object/' + id}`)
       this.setState({ ...res } )
@@ -163,7 +159,7 @@ class edit extends Component {
           <button className="btn" type="submit">
             Submit
           </button>
-          <Link to={'/main'}>Cancel</Link>
+          <button><Link to={'/main'}>Cancel</Link></button>
           {this.state.filter.map((filter, idx) => (
             <div className="filter">
               <input name={`filter[${idx}].label`} type="text" placeholder={`Filter #${idx + 1} label`} value={filter.label} onChange={this.handleFilterLabelChange(idx)} />
