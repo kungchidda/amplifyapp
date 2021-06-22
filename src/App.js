@@ -3,7 +3,10 @@ import Amplify, { API } from 'aws-amplify'
 import awsConfig from './aws-exports'
 import './App.css';
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
-
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import main from './pages/main';
+import edit from './pages/edit';
+import add from './pages/add';
 
 Amplify.configure(awsConfig)
 
@@ -11,126 +14,137 @@ let apiName = 'collectionAPI'
 let path = '/collection'
 
 class App extends Component {
-  state = {
-    title: '',
-    content: '',
-    list: [],
-    showDetail: false,
-    selectedItem: {},
-    filter: [{ label: "" , value:""}]
-  }
+  // state = {
+  //   title: '',
+  //   content: '',
+  //   list: [],
+  //   showDetail: false,
+  //   selectedItem: {},
+  //   filter: [{ label: '', value: '' }]
+  // }
 
-  handleChange = e => {
-    const { value, name } = e.target
-    this.setState({ [name]: value })
-  }
+  // handleChange = e => {
+  //   const { value, name } = e.target
+  //   this.setState({ [name]: value })
+  // }
 
-  handleSubmit = async e => {
-    e.preventDefault()
+  // handleSubmit = async e => {
+  //   e.preventDefault()
 
-    const body = {
-      id: Date.now().toString(),
-      title: this.state.title,
-      content: this.state.content,
-      filter: this.state.filter
-    }
+  //   const body = {
+  //     id: Date.now().toString(),
+  //     title: this.state.title,
+  //     content: this.state.content,
+  //     filter: this.state.filter
+  //   }
 
-    try {
-      const res = await API.post(apiName, path, { body })
-      console.log(res)
-    } catch (err) {
-      console.log(err)
-    }
+  //   try {
+  //     const res = await API.post(apiName, path, { body })
+  //     console.log(res)
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
 
-    this.setState({ title: '', content: '' })
-    this.fetchList()
-  }
+  //   this.setState({ title: '', content: '', filter: [{ label: '', value: '' }] })
+  //   this.fetchList()
+  // }
 
-  handleSelectItem = async id => {
-    this.setState({ showDetail: true, selectedItem: {} })
+  // handleSelectItem = async id => {
+  //   this.setState({ showDetail: true, selectedItem: {} })
 
-    try {
-      const res = await API.get(apiName, `${path + '/object/' + id}`)
-      this.setState({ selectedItem: { ...res } })
-    } catch (err) {
-      console.log(err)
-    }
-  }
+  //   try {
+  //     const res = await API.get(apiName, `${path + '/object/' + id}`)
+  //     this.setState({ selectedItem: { ...res } })
+  //     console.log("First :", res)
+  //     console.log("Second :", res.filter[0].label, res.filter[0].value);
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // }
 
-  handleDelete = async id => {
-    try {
-      await API.del(apiName, `${path + '/object/' + id}`)
-      this.setState({ showDetail: false })
-      this.fetchList()
-    } catch (err) {
-      console.log(err)
-    }
-  }
+  // handleDelete = async id => {
+  //   try {
+  //     await API.del(apiName, `${path + '/object/' + id}`)
+  //     this.setState({ showDetail: false })
+  //     this.fetchList()
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // }
 
-  handleBackList = () => {
-    this.setState({ showDetail: false })
-  }
+  // handleBackList = () => {
+  //   this.setState({ showDetail: false })
+  // }
 
 
 
-  handleFilterLabelChange = idx => e => {
-    const newFilter = this.state.filter.map((filter, sidx) => {
-      if (idx !== sidx) return filter;
-      return { ...filter, label: e.target.value };
-    });
+  // handleFilterLabelChange = idx => e => {
+  //   const newFilter = this.state.filter.map((filter, sidx) => {
+  //     if (idx !== sidx) return filter;
+  //     return { ...filter, label: e.target.value };
+  //   });
 
-    this.setState({ filter: newFilter });
-  };
+  //   this.setState({ filter: newFilter });
+  // };
 
-  handleFilterValueChange = idx => e => {
-    const newFilter = this.state.filter.map((filter, sidx) => {
-      if (idx !== sidx) return filter;
-      return { ...filter, value: e.target.value };
-    });
+  // handleFilterValueChange = idx => e => {
+  //   const newFilter = this.state.filter.map((filter, sidx) => {
+  //     if (idx !== sidx) return filter;
+  //     return { ...filter, value: e.target.value };
+  //   });
 
-    this.setState({ filter: newFilter });
-  };
+  //   this.setState({ filter: newFilter });
+  // };
 
-  handleAddFilter = () => {
-    console.log("start handleAddFilter");
-    this.setState({
-      filter: this.state.filter.concat([{ name: "" }])
-    });
-    console.log("end handleAddFilter");
-  };
+  // handleAddFilter = () => {
+  //   console.log("start handleAddFilter");
+  //   this.setState({
+  //     filter: this.state.filter.concat([{ label: '', value: '' }])
+  //   });
+  //   console.log("end handleAddFilter");
+  // };
 
-  handleRemoveFilter = idx => () => {
-    this.setState({
-      filter: this.state.filter.filter((s, sidx) => idx !== sidx)
-    });
-  };
+  // handleRemoveFilter = idx => () => {
+  //   this.setState({
+  //     filter: this.state.filter.filter((s, sidx) => idx !== sidx)
+  //   });
+  // };
 
-  async fetchList() {
-    try {
-      const res = await API.get(apiName, path)
-      this.setState({ list: [...res] })
-    } catch (err) {
-      console.log(err)
-    }
-  }
+  // async fetchList() {
+  //   try {
+  //     const res = await API.get(apiName, path)
+  //     this.setState({ list: [...res] })
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // }
 
-  componentDidMount() {
-    this.fetchList()
-  }
+  // componentDidMount() {
+  //   this.fetchList()
+  // }
 
   render() {
-    const {
-      handleChange,
-      handleSubmit,
-      handleSelectItem,
-      handleBackList,
-      handleDelete,
-    } = this
-    const { title, content, list, showDetail, selectedItem } = this.state
+    // const {
+    //   handleChange,
+    //   handleSubmit,
+    //   handleSelectItem,
+    //   handleBackList,
+    //   handleDelete,
+    // } = this
+    // const { title, content, list, showDetail, selectedItem, filter } = this.state
 
     return (
+
+
+
       <div className="App">
-        <h2>Todo</h2>
+        <Router>
+          <Route exact path='/main' component={main} />
+          <Route exact path='/object/:id' component={edit} />
+          <Route exact path='/add' component={add} />
+        </Router>
+
+        {/* <h2>Todo</h2>
         <form onSubmit={handleSubmit}>
           <div className="row">
             <label htmlFor="title">Title</label>
@@ -184,6 +198,11 @@ class App extends Component {
           <div className="detail">
             <h4>{selectedItem.title}</h4>
             <p>{selectedItem.content}</p>
+
+
+            {selectedItem.content}
+            {selectedItem.title}
+
             <button type="button" className="btn" onClick={handleBackList}>
               Back to List
             </button>
@@ -195,7 +214,7 @@ class App extends Component {
               Delete
             </button>
           </div>
-        )}
+        )} */}
       </div>
     )
   }
