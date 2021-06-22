@@ -21,6 +21,15 @@ class main extends Component {
     filter: [{ label: '', value: '' }]
   }
 
+  handleDelete = async id => {
+    try {
+      await API.del(apiName, `${path + '/object/' + id}`)
+      this.setState({ showDetail: false })
+      this.fetchList()
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   async fetchList() {
     try {
@@ -59,7 +68,10 @@ class main extends Component {
         <ul style={{ display: showDetail ? 'none' : 'block' }}>
           {list.map(item => (
             <li key={item.id}>
-              <Link to={`/object/${item.id}`}>{ item.title }</Link>
+              {item.title}<Link to={`/object/${item.id}`}>Edit</Link>
+              <button type="button" className="btn" onClick={() => handleDelete(item.id)}>
+                Delete
+              </button>
             </li>
           ))}
         </ul>

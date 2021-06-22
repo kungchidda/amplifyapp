@@ -3,6 +3,7 @@ import Amplify, { API } from 'aws-amplify'
 import awsConfig from '../aws-exports'
 import '../App.css';
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import App from '../App'
 
 Amplify.configure(awsConfig)
@@ -42,8 +43,8 @@ class add extends Component {
       console.log(err)
     }
 
-    this.setState({ title: '', content: '', filter: [{ label: '', value: '' }] })
-    this.fetchList()
+    window.location.href = "/main";
+
   }
 
   handleSelectItem = async id => {
@@ -160,6 +161,7 @@ class add extends Component {
           <button className="btn" type="submit">
             Submit
           </button>
+          <Link to={'/main'}>Cancel</Link>
 
           {this.state.filter.map((filter, idx) => (
             <div className="filter">

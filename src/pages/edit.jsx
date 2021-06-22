@@ -3,7 +3,7 @@ import Amplify, { API } from 'aws-amplify'
 import awsConfig from '../aws-exports'
 import '../App.css';
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
-import { useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import App from '../App'
 
 Amplify.configure(awsConfig)
@@ -29,24 +29,24 @@ class edit extends Component {
   }
 
   handleSubmit = async e => {
+    console.log("this.state.title = ", this.state.title);
     e.preventDefault()
-
     const body = {
-      id: Date.now().toString(),
+      id: this.state.id,
       title: this.state.title,
       content: this.state.content,
       filter: this.state.filter
     }
 
     try {
-      const res = await API.post(apiName, path, { body })
+      const res = await API.put(apiName, path, { body })
       console.log(res)
     } catch (err) {
       console.log(err)
     }
 
-    this.setState({ title: '', content: '', filter: [{ label: '', value: '' }] })
-    this.fetchList()
+    window.location.href = "/main";
+
   }
 
   handleSelectItem = async id => {
@@ -54,16 +54,8 @@ class edit extends Component {
 
     try {
       const res = await API.get(apiName, `${path + '/object/' + id}`)
-      //this.setState({ selectedItem: { ...res } })
+      this.setState({ ...res } )
       console.log("handleSelectItem success\n",res)
-
-      this.setState({
-        title: res.title,
-        content: res.content,
-        filter:res.filter
-
-      })
-
     } catch (err) {
       console.log(err)
     }
@@ -171,7 +163,7 @@ class edit extends Component {
           <button className="btn" type="submit">
             Submit
           </button>
-
+          <Link to={'/main'}>Cancel</Link>
           {this.state.filter.map((filter, idx) => (
             <div className="filter">
               <input name={`filter[${idx}].label`} type="text" placeholder={`Filter #${idx + 1} label`} value={filter.label} onChange={this.handleFilterLabelChange(idx)} />
@@ -188,29 +180,7 @@ class edit extends Component {
 
 
         </form>
-        <hr />
-
-        {showDetail && (
-          <div className="detail">
-            <h4>{selectedItem.title}</h4>
-            <p>{selectedItem.content}</p>
-
-
-            {selectedItem.content}
-            {selectedItem.title}
-
-            <button type="button" className="btn" onClick={handleBackList}>
-              Back to List
-            </button>
-            <button
-              type="button"
-              className="btn"
-              onClick={() => handleDelete(selectedItem.id)}
-            >
-              Delete
-            </button>
-          </div>
-        )}
+        
       </div>
     )
   }
